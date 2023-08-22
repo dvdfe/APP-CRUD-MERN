@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import "../styles/components/_loginPage.scss";
 import loginImage from "../assets/loginImage.webp";
+import Login from "../components/Login";
 import axios from "axios";
+import Signup from "../components/Signup";
 
 const LoginPage = () => {
-//   const handleForm = (e) => {
-//     axios.post("http://localhost:3000/auth/login");
-//   };
-
   return (
-    <div className="loginPage-container">
-      <div className="image-container">
-        <img src={loginImage} alt="Image avec texture et motif" />
+    <div className="login-page-container">
+      <div className="image-container" style={{ backgroundImage: `url(${loginImage})` }}>
       </div>
-      <form
-        className="login-form-container"
-        onSubmit={(e) => handleForm(e.target.value)}
-      >
-        <h1>Se connecter</h1>
-        <input type="text" placeholder="Adresse Email" />
-        <input type="password" placeholder="Mot de passe" />
-        <input type="submit" value="Se connecter" />
-      </form>
+      <div className="login-form-container">
+        {/* <Login /> */}
+        <Signup/>
+      </div>
     </div>
   );
 };
