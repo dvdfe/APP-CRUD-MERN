@@ -3,13 +3,18 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 exports.signup = async (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, pseudo, password, confirmPassword } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
+    const existingPseudo = await User.findOne({ pseudo });
 
     if (existingUser) {
       return res.status(400).json({ message: "Cette adresse e-mail est déjà utilisée" });
+    }
+
+    if (existingPseudo) {
+      return res.status(400).json({ message: "Cette pseudo est déjà utilisé" });
     }
 
     if (password !== confirmPassword) {
@@ -20,6 +25,7 @@ exports.signup = async (req, res, next) => {
 
     const user = new User({
       email: email,
+      pseudo: pseudo,
       password: hash,
     });
 

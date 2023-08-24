@@ -24,7 +24,6 @@ const Login = () => {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h1>Se connecter</h1>
-        <p>Pas encore inscrit ? <Link to="/signup">S'inscrire</Link></p>
         <input
           type="email"
           placeholder="Adresse Email"
