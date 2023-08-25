@@ -15,6 +15,7 @@ const Login = () => {
         email,
         password,
       });
+      window.location = "/"
     } catch (error) {
       setErrorMessage(error.response.data.message);
     }
@@ -37,6 +38,8 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         {errorMessage && <div style={{ color: "red", paddingBottom: "5px" }}>{errorMessage}</div>}
+        <input type="checkbox" id="terms" />
+        <label htmlFor="terms">J'accepte les <a href="/terms" target="_blank" rel="noopener norferrer">conditions générales</a></label>
         <input type="submit" value="Se connecter" />
       </form>
     </div>

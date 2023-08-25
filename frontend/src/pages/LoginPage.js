@@ -30,7 +30,7 @@ const LoginPage = () => {
             Se connecter
           </li>
           <li onClick={handleModal} id="signup">
-            S'inscrire
+            Créer un compte
           </li>
         </ul>
         {signInModal && <Login />}

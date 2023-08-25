@@ -33,7 +33,7 @@ const Signup = () => {
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
-        <h1>S'inscrire</h1>
+        <h1>Créer un compte</h1>
         <input
           type="email"
           placeholder="Adresse Email"

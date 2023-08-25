@@ -2,64 +2,116 @@ const User = require("../models/user.models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-exports.signup = async (req, res, next) => {
-  const { email, pseudo, password, confirmPassword } = req.body;
+const ERROR_MESSAGES = {
+  DUPLICATE_EMAIL: "Cette adresse e-mail est déjà utilisée",
+  DUPLICATE_PSEUDO: "Ce pseudo est déjà utilisé",
+  PASSWORD_MISMATCH: "Les mots de passe ne correspondent pas",
+  INVALID_CREDENTIALS: "Paire identifiant/mot de passe incorrecte",
+  INTERNAL_ERROR: "Une erreur interne est survenue",
+};
 
+exports.getAllUsers = async (req, res) => {
   try {
-    const existingUser = await User.findOne({ email });
-    const existingPseudo = await User.findOne({ pseudo });
-
-    if (existingUser) {
-      return res.status(400).json({ message: "Cette adresse e-mail est déjà utilisée" });
-    }
-
-    if (existingPseudo) {
-      return res.status(400).json({ message: "Cette pseudo est déjà utilisé" });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: "Les mots de passe ne correspondent pas" });
-    }
-
-    const hash = await bcrypt.hash(password, 10);
-
-    const user = new User({
-      email: email,
-      pseudo: pseudo,
-      password: hash,
-    });
-
-    await user.save();
-    res.status(201).json({ message: "Utilisateur créé" });
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: "Une erreur interne est survenue", error });
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
   }
 };
 
-exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        return res.status(401).json({ message: "Paire identifiant/mot de passe incorrecte" });
-      }
+exports.userInfo = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId).select("-password");
 
-      bcrypt
-        .compare(req.body.password, user.password)
-        .then((valid) => {
-          if (!valid) {
-            return res.status(401).json({ message: "Paire identifiant/mot de passe incorrecte" });
-          }
+    if (!user) {
+      return res.status(400).send("ID inconnu : " + userId);
+    }
 
-          res.status(200).json({
-            userID: user._id,
-            token: jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-              expiresIn: "24h",
-            }),
-          });
-        })
-        .catch(() => {
-          res.status(500).json({ message: "Erreur serveur" });
-        });
-    })
-    .catch((error) => res.status(500).json({ error }));
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).send("ID inconnu : " + userId);
+    } else {
+      user.bio = req.body.bio; 
+      const updatedUser = await user.save();
+
+      res.status(200).json(updatedUser);
+    }
+  } catch (error) {
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).send("ID inconnu : " + userId);
+    } else {
+      await User.findByIdAndRemove(userId);
+      res.status(200).json({ message: "Utilisateur supprimé" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
+  }
+};
+
+exports.followUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const userIdToFollow = req.body.idToFollow;
+
+    const user = await User.findById(userId);
+    const userToFollow = await User.findById(userIdToFollow);
+
+    if (!user || !userToFollow) {
+      return res.status(400).send("ID inconnu : " + userId);
+    }
+
+    user.following.addToSet(userIdToFollow);
+    userToFollow.followers.addToSet(userId);
+
+    const updatedUser = await user.save();
+    const updatedUserToFollow = await userToFollow.save();
+
+    res.status(201).json({ updatedUser, updatedUserToFollow });
+  } catch (error) {
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
+  }
+};
+
+exports.unfollowUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const userIdToUnfollow = req.body.idToUnfollow;
+
+    const user = await User.findById(userId);
+    const userToUnfollow = await User.findById(userIdToUnfollow);
+
+    if (!user || !userToUnfollow) {
+      return res.status(400).send("ID inconnu : " + userId);
+    }
+
+    user.following.pull(userIdToUnfollow);
+    userToUnfollow.followers.pull(userId);
+
+    const updatedUser = await user.save();
+    const updatedUserToUnfollow = await userToUnfollow.save();
+
+    res.status(201).json({ updatedUser, updatedUserToUnfollow });
+  } catch (error) {
+    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
+  }
 };
