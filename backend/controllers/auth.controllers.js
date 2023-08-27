@@ -10,7 +10,7 @@ const ERROR_MESSAGES = {
   INTERNAL_ERROR: "Une erreur interne est survenue",
 };
 
-//Connexion au site 
+//Connexion au site
 exports.signup = async (req, res, next) => {
   const { email, pseudo, password, confirmPassword } = req.body;
 
@@ -19,15 +19,21 @@ exports.signup = async (req, res, next) => {
     const existingPseudo = await User.findOne({ pseudo });
 
     if (existingUser) {
-      return res.status(400).json({ message:  ERROR_MESSAGES.DUPLICATE_EMAIL, error });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.DUPLICATE_EMAIL, error });
     }
 
     if (existingPseudo) {
-      return res.status(400).json({ message: ERROR_MESSAGES.DUPLICATE_PSEUDO, error });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.DUPLICATE_PSEUDO, error });
     }
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ message: ERROR_MESSAGES.PASSWORD_MISMATCH, error });
+      return res
+        .status(400)
+        .json({ message: ERROR_MESSAGES.PASSWORD_MISMATCH, error });
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -49,27 +55,38 @@ exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ message: ERROR_MESSAGES.INVALID_CREDENTIALS, error });
+        return res
+          .status(401)
+          .json({ message: ERROR_MESSAGES.INVALID_CREDENTIALS });
       }
 
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
           if (!valid) {
-            return res.status(401).json({ message: ERROR_MESSAGES.INVALID_CREDENTIALS, error });
+            return res
+              .status(401)
+              .json({ message: ERROR_MESSAGES.INVALID_CREDENTIALS });
           }
 
-          res.status(200).json({
+          const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "24h",
+          });
+
+          res.status(200).cookie("jwt", token, { httpOnly: true }).json({
             userID: user._id,
             pseudo: user.pseudo,
-            token: jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-              expiresIn: "24h",
-            }),
+            token: token,
           });
         })
         .catch(() => {
-          res.status(500).json({ message:  ERROR_MESSAGES.INTERNAL_ERROR, error });
+          res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR });
         });
     })
     .catch((error) => res.status(500).json({ error }));
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie("jwt");
+  res.status(200).json({ message: "Déconnexion réussie" });
 };
