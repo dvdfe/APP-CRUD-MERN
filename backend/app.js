@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const userRoutes = require("./routes/user.routes")
+const postRoutes = require("./routes/post.routes")
 
 mongoose
   .connect(process.env.DB_ADMIN, {
@@ -27,7 +28,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/auth", userRoutes)
-app.use("/", userRoutes)
+app.use("/user", userRoutes)
+app.use("/post", postRoutes)
 
 module.exports = app;
