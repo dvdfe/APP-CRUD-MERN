@@ -42,7 +42,7 @@ exports.updateUser = async (req, res) => {
     if (!user) {
       return res.status(400).send("ID inconnu : " + userId);
     } else {
-      user.bio = req.body.bio; 
+      user.bio = req.body.bio;
       const updatedUser = await user.save();
 
       res.status(200).json(updatedUser);
@@ -55,16 +55,29 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(400).send("ID inconnu : " + userId);
-    } else {
-      await User.findByIdAndRemove(userId);
-      res.status(200).json({ message: "Utilisateur supprimé" });
-    }
+    // Supprimer les posts de l'utilisateur
+    await Post.deleteMany({ userId: userId });
+
+    // Supprimer les commentaires de l'utilisateur
+    await Post.updateMany(
+      {},
+      { $pull: { comments: { commenterId: userId } } },
+      { multi: true }
+    );
+
+    await Post.updateMany({}, { $pull: { likers: userId } }, { multi: true });
+
+    // Supprimer l'utilisateur
+    await User.findByIdAndRemove(userId);
+
+    res
+      .status(200)
+      .json({ message: "Utilisateur et ses contenus associés supprimés" });
   } catch (error) {
-    res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
+    res
+      .status(500)
+      .json({ message: "Une erreur est survenue", error: error.message });
   }
 };
 

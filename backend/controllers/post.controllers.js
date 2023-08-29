@@ -1,5 +1,5 @@
 const Post = require("../models/post.models");
-const post = require("../models/post.models");
+const User = require("../models/user.models");
 const fs = require("fs");
 
 exports.readPost = async (req, res, next) => {
@@ -77,31 +77,52 @@ exports.deletePost = async (req, res) => {
   
 
   exports.likePost = async (req, res) => {
-    // try {
-    //     const postId = req.params.id;
-    //     const postIdToLike = req.body.idTolike;
+    try {
+      const postId = req.params.id;
+      const userId = req.body.userId;
+  
+      const user = await User.findById(userId);
+  
+      if (!user || !postId) {
+        return res.status(400).send("Post ou utilisateur introuvable");
+      } else {
+        const updatedPost = await Post.findByIdAndUpdate(
+          postId,
+          {
+            $addToSet: { likers: userId }
+          },
+          { new: true }
+        );
+  
+        res.status(200).json(updatedPost);
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Une erreur est survenue", error: error.message });
+    }
+  };
     
-    //     const user = await User.findById(userId);
-    //     const userToFollow = await User.findById(userIdToFollow);
-    
-    //     if (!user || !userToFollow) {
-    //       return res.status(400).send("ID inconnu : " + userId);
-    //     }
-    
-    //     user.following.addToSet(userIdToFollow);
-    //     userToFollow.followers.addToSet(userId);
-    
-    //     const updatedUser = await user.save();
-    //     const updatedUserToFollow = await userToFollow.save();
-    
-    //     res.status(201).json({ updatedUser, updatedUserToFollow });
-    //   } catch (error) {
-    //     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
-    //   }
-    
-  }
 
-
-  exports.dislikePost = (req, res) => {
-      
+  exports.unlikePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.body.userId;
+    
+        const user = await User.findById(userId);
+    
+        if (!user || !postId) {
+          return res.status(400).send("Post ou utilisateur introuvable");
+        } else {
+          const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            {
+              $pull: { likers: userId }
+            },
+            { new: true }
+          );
+    
+          res.status(200).json(updatedPost);
+        }
+      } catch (error) {
+        res.status(500).json({ message: "Une erreur est survenue", error: error.message });
+      }
   }
