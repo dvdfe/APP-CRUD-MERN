@@ -1,4 +1,5 @@
 const User = require("../models/user.models");
+const Post = require("../models/post.models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -56,20 +57,28 @@ exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    // Supprimer les posts de l'utilisateur
+    // Supprimer les posts de l'utilisateur s'ils existent
     await Post.deleteMany({ userId: userId });
-
-    // Supprimer les commentaires de l'utilisateur
+    console.log("1");
+    // Supprimer les commentaires de l'utilisateur sur tous les posts s'ils existent
     await Post.updateMany(
       {},
       { $pull: { comments: { commenterId: userId } } },
       { multi: true }
     );
+    console.log("2");
 
+    // Supprimer les likes de l'utilisateur sur tous les posts s'ils existent
     await Post.updateMany({}, { $pull: { likers: userId } }, { multi: true });
+    console.log("3");
 
-    // Supprimer l'utilisateur
-    await User.findByIdAndRemove(userId);
+    // Supprimer l'utilisateur s'il existe
+    const deletedUser = await User.findByIdAndRemove(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Utilisateur introuvable" });
+    }
+    console.log("4");
 
     res
       .status(200)
