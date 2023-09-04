@@ -18,4 +18,6 @@ router.patch("/delete-comment-post/:id", postCtrl.deleteCommentPost)
 // router.patch("/like-comment-post/:id", postCtrl.likeCommentPost)
 // router.patch("/unlike-comment-post/:id", postCtrl.unlikeCommentPost)
 
+
+
 module.exports = router

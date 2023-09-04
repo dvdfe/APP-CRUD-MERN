@@ -3,6 +3,8 @@ const router = express.Router();
 const auth = require("../middleware/auth")
 const userCtrl = require("../controllers/user.controllers");
 const authCtrl = require("../controllers/auth.controllers");
+const uploadCtrl = require("../controllers/default.controllers");
+const multer = require("../middleware/multer-config")
 
 //Création de compte, connexion et deconnexion
 router.post("/signup", authCtrl.signup);
@@ -16,5 +18,8 @@ router.delete("/:id",auth, userCtrl.deleteUser);
 router.put("/:id",auth, userCtrl.updateUser);
 router.patch("/follow/:id",auth, userCtrl.followUser);
 router.patch("/unfollow/:id",auth, userCtrl.unfollowUser);
+
+//upload
+router.post("/upload", multer, uploadCtrl.defaultProfil)
 
 module.exports = router;

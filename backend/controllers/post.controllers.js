@@ -132,80 +132,110 @@ exports.unlikePost = async (req, res) => {
 };
 
 exports.commentPost = async (req, res) => {
-    try {
-      const postId = req.params.id;
-      const userId = req.body.userId;
-  
-      const user = await User.findById(userId);
-  
-      if (!user) {
-        return res.status(400).json({ message: "Utilisateur introuvable" });
-      }
-  
-      const updatedPost = await Post.findByIdAndUpdate(
-        postId,
-        {
-          $push: {
-            comments: {
-              commenterId: user._id,
-              commenterPseudo: req.body.commenterPseudo,
-              text: req.body.text,
-              timestamp: new Date().getTime(),
-            },
-          },
-        },
-        { new: true }
-      );
-  
-      if (!updatedPost) {
-        return res.status(404).json({ message: "Post introuvable" });
-      }
-  
-      updatedPost.comments.sort((a, b) => b.timestamp - a.timestamp);
-  
-      res.status(200).json(updatedPost);
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Une erreur est survenue", error: error.message });
-    }
-  };
+  try {
+    const postId = req.params.id;
+    const userId = req.body.userId;
 
-  exports.editCommentPost = async (req, res) => {
-    try {
-      const commentId = req.params.id;
-      const userId = req.body.userId;
-  
-      const user = await User.findById(userId);
-  
-      if (!user) {
-        return res.status(400).json({ message: "Utilisateur introuvable" });
-      }
-  
-      const updatedComment = await Post.findOneAndUpdate(
-        { "comments._id": commentId, "comments.commenterId": userId },
-        {
-          $set: {
-            "comments.$.text": req.body.text,
-            "comments.$.timestamp": new Date().getTime(),
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ message: "Utilisateur introuvable" });
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          comments: {
+            commenterId: user._id,
+            commenterPseudo: req.body.commenterPseudo,
+            text: req.body.text,
+            timestamp: new Date().getTime(),
           },
         },
-        { new: true }
-      );
-  
-      if (!updatedComment) {
-        return res.status(404).json({ message: "Commentaire introuvable" });
-      }
-  
-      updatedComment.comments.sort((a, b) => b.timestamp - a.timestamp);
-  
-      res.status(200).json(updatedComment);
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Une erreur est survenue", error: error.message });
+      },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post introuvable" });
     }
-  };
-  exports.deleteCommentPost = (req, res) => {};
+
+    updatedPost.comments.sort((a, b) => b.timestamp - a.timestamp);
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Une erreur est survenue", error: error.message });
+  }
+};
+
+exports.editCommentPost = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+    const userId = req.body.userId;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ message: "Utilisateur introuvable" });
+    }
+
+    const updatedComment = await Post.findOneAndUpdate(
+      { "comments._id": commentId, "comments.commenterId": userId },
+      {
+        $set: {
+          "comments.$.text": req.body.text,
+          "comments.$.timestamp": new Date().getTime(),
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedComment) {
+      return res.status(404).json({ message: "Commentaire introuvable" });
+    }
+
+    updatedComment.comments.sort((a, b) => b.timestamp - a.timestamp);
+
+    res.status(200).json(updatedComment);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Une erreur est survenue", error: error.message });
+  }
+};
+exports.deleteCommentPost = async (req, res) => {
+  try {
+    const commentId = req.body.commentId;
+
+    if (!commentId) {
+      return res.status(400).json({ message: "ID du commentaire manquant" });
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $pull: {
+          comments: { _id: commentId },
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res
+        .status(404)
+        .json({ message: "Post ou commentaire introuvable" });
+    }
+
+    res.status(200).json({ message: "Commentaire supprimé" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Une erreur est survenue", error: error.message });
+  }
+};
 // exports.likeCommentPost = (req, res) => {};
 // exports.unlikeCommentPost = (req, res) => {};

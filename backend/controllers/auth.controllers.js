@@ -10,7 +10,8 @@ const ERROR_MESSAGES = {
   INTERNAL_ERROR: "Une erreur interne est survenue",
 };
 
-//Connexion au site
+
+//Inscription au site
 exports.signup = async (req, res, next) => {
   const { email, pseudo, password, confirmPassword } = req.body;
 
@@ -51,6 +52,7 @@ exports.signup = async (req, res, next) => {
   }
 };
 
+//Connexion au site
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
@@ -86,6 +88,8 @@ exports.login = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
+
+//Deconnexion au site
 exports.logout = (req, res) => {
   res.clearCookie("jwt");
   res.status(200).json({ message: "Déconnexion réussie" });
