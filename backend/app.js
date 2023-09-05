@@ -1,5 +1,6 @@
 const express = require("express");
 const cookieParser = require("cookie-parser")
+const cors = require("cors")
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
@@ -14,6 +15,7 @@ mongoose
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 app.use(cookieParser())
+app.use(cors({origin: process.env.CLIENT_URL}))
 app.use(express.json());
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -30,5 +32,6 @@ app.use((req, res, next) => {
 
 app.use("/user", userRoutes)
 app.use("/post", postRoutes)
+// app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;

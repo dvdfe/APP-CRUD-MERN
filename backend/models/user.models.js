@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema(
       lowercase: true,
     },
     password: { type: String, required: true },
-    picture: { type: String, default: "./uploads/profil/random-user.png" },
+    picture: { type: String, default: "./uploads/profil/new-user.webp" },
     bio: { type: String, max: 1024 },
     followers: { type: [String] },
     following: { type: [String] },

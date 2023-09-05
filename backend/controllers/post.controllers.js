@@ -14,10 +14,11 @@ exports.readPost = async (req, res, next) => {
 };
 
 exports.createPost = (req, res, next) => {
-  const { postId, message, video } = req.body;
+  const { posterId, message, video } = req.body;
   const newPost = new Post({
-    postId,
+    posterId,
     message,
+    image,
     video,
     likers: [],
     comments: [],

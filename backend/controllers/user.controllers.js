@@ -1,7 +1,7 @@
 const User = require("../models/user.models");
 const Post = require("../models/post.models");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const fs = require("fs")
+
 
 const ERROR_MESSAGES = {
   DUPLICATE_EMAIL: "Cette adresse e-mail est déjà utilisée",
@@ -44,6 +44,11 @@ exports.updateUser = async (req, res) => {
       return res.status(400).send("ID inconnu : " + userId);
     } else {
       user.bio = req.body.bio;
+
+      if (req.file) {
+        user.picture = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+      }
+
       const updatedUser = await user.save();
 
       res.status(200).json(updatedUser);
@@ -52,6 +57,7 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ message: ERROR_MESSAGES.INTERNAL_ERROR, error });
   }
 };
+
 
 exports.deleteUser = async (req, res) => {
   try {
