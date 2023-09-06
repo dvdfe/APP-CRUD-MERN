@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const userRoutes = require("./routes/user.routes")
 const postRoutes = require("./routes/post.routes")
+const path = require("path")
 
 mongoose
   .connect(process.env.DB_ADMIN, {
@@ -32,6 +33,6 @@ app.use((req, res, next) => {
 
 app.use("/user", userRoutes)
 app.use("/post", postRoutes)
-// app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 module.exports = app;

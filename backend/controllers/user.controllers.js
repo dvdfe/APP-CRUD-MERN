@@ -46,7 +46,7 @@ exports.updateUser = async (req, res) => {
       user.bio = req.body.bio;
 
       if (req.file) {
-        user.picture = `${req.protocol}://${req.get("host")}/images/${req.file.filename}`;
+        user.picture = `${req.protocol}://${req.get("host")}/uploads/profil/${req.file.filename}`;
       }
 
       const updatedUser = await user.save();

@@ -18,41 +18,53 @@ exports.createPost = (req, res, next) => {
   const newPost = new Post({
     posterId,
     message,
-    image,
+    image: "",
     video,
     likers: [],
     comments: [],
   });
-
-  try {
-    newPost
-      .save()
-      .then((post) => {
-        console.log(post);
-        res.status(201).json({ message: "Post créé: ", post });
-      })
-      .catch((error) => {
-        res.status(500).json({ error });
-      });
-  } catch (err) {
-    return res.status(400).send(err);
+  if (req.file) {
+    newPost.image = `${req.protocol}://${req.get("host")}/uploads/posts/${
+      req.file.filename
+    }`;
   }
+
+  newPost
+    .save()
+    .then((post) => {
+      console.log(post);
+      res.status(201).json({ message: "Post créé: ", post });
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
 };
 
 exports.modifyPost = async (req, res) => {
   try {
     const postId = req.params.id;
+    const userId = req.auth.userId; 
+
     let post = await Post.findById(postId);
 
     if (!post) {
       return res.status(400).send("Post introuvable : " + postId);
-    } else {
-      post.message = req.body.message;
-      post.video = req.body.video;
-      const updatedPost = await post.save();
-
-      res.status(200).json(updatedPost);
     }
+
+    if (post.userId !== userId) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+
+    if (req.file) {
+      post.image = `${req.protocol}://${req.get("host")}/uploads/posts/${
+        req.file.filename
+      }`;
+    }
+    post.message = req.body.message;
+    post.video = req.body.video;
+    const updatedPost = await post.save();
+
+    res.status(200).json(updatedPost);
   } catch (error) {
     res
       .status(500)
@@ -64,6 +76,11 @@ exports.deletePost = async (req, res) => {
   try {
     const postId = req.params.id;
     const post = await Post.findById(postId);
+    const userId = req.auth.userId; 
+
+    if (post.userId !== userId) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
 
     if (!post) {
       return res.status(400).send("Post introuvable : " + postId);
