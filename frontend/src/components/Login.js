@@ -1,9 +1,11 @@
 import "../styles/components/_login.scss";
 import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../feature/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -11,8 +13,9 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!acceptTerms) { // Vérifiez si les conditions sont acceptées
+
+    if (!acceptTerms) {
+      // Vérifiez si les conditions sont acceptées
       setErrorMessage("Veuillez accepter les conditions générales.");
       return;
     }
@@ -25,10 +28,12 @@ const Login = () => {
           password,
         },
         {
-          withCredentials: true, 
+          withCredentials: true,
         }
       );
-      window.location = "/";
+      const userData = response.data;
+      dispatch(setUserData(userData));
+      // window.location = "/";
       console.log(response.data);
     } catch (error) {
       if (
