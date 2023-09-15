@@ -3,23 +3,25 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../feature/userSlice";
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false); // Nouvelle variable d'état pour suivre l'acceptation des conditions
+  const [acceptTerms, setAcceptTerms] = useState(false); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!acceptTerms) {
-      // Vérifiez si les conditions sont acceptées
       setErrorMessage("Veuillez accepter les conditions générales.");
       return;
     }
-
+  
     try {
       const response = await axios.post(
         "http://localhost:3000/user/login",
@@ -33,7 +35,7 @@ const Login = () => {
       );
       const userData = response.data;
       dispatch(setUserData(userData));
-      // window.location = "/";
+      navigate('/');
       console.log(response.data);
     } catch (error) {
       if (
@@ -47,7 +49,7 @@ const Login = () => {
       }
     }
   };
-
+  
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
@@ -73,7 +75,7 @@ const Login = () => {
           type="checkbox"
           id="terms"
           checked={acceptTerms}
-          onChange={(e) => setAcceptTerms(e.target.checked)} // Met à jour la variable d'état acceptTerms
+          onChange={(e) => setAcceptTerms(e.target.checked)} 
         />
         <label htmlFor="terms">
           J'accepte les{" "}

@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import LoginPage from "../../pages/LoginPage";
 import Home from "../../pages/Home";
-import Profil from "../Profil";
+import Profil from "../../pages/Profil";
 import Terms from "../../pages/Terms";
 
 const index = () => {

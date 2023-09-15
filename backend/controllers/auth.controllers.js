@@ -10,7 +10,6 @@ const ERROR_MESSAGES = {
   INTERNAL_ERROR: "Une erreur interne est survenue",
 };
 
-
 //Inscription au site
 exports.signup = async (req, res, next) => {
   const { email, pseudo, password, confirmPassword } = req.body;
@@ -79,6 +78,11 @@ exports.login = (req, res, next) => {
             userID: user._id,
             pseudo: user.pseudo,
             token: token,
+            bio: user.bio,
+            followers: user.followers,
+            following: user.following,
+            likes: user.likes,
+            picture: user.picture,
           });
         })
         .catch(() => {
@@ -87,7 +91,6 @@ exports.login = (req, res, next) => {
     })
     .catch((error) => res.status(500).json({ error }));
 };
-
 
 //Deconnexion au site
 exports.logout = (req, res) => {
