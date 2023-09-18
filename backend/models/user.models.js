@@ -16,6 +16,7 @@ const userSchema = mongoose.Schema(
     },
     password: { type: String, required: true },
     picture: { type: String, default: "./uploads/profil/new-user.webp" },
+    name: {type: String},
     bio: { type: String, max: 1024 },
     followers: { type: [String] },
     following: { type: [String] },

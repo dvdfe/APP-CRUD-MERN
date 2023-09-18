@@ -44,6 +44,7 @@ exports.updateUser = async (req, res) => {
       return res.status(400).send("ID inconnu : " + userId);
     } else {
       user.bio = req.body.bio;
+      user.name = req.body.name
 
       if (req.file) {
         user.picture = `${req.protocol}://${req.get("host")}/uploads/profil/${req.file.filename}`;

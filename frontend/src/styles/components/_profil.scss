@@ -1,0 +1,47 @@
+// Profil.scss
+.page-container {
+  display: flex;
+}
+
+.info-container {
+  display: flex;
+  margin: 0 auto 0 auto;
+  padding: 20px; 
+  gap: 20wh;
+
+  .profil-picture {
+    img {
+      max-width: 100%; 
+    }
+  }
+
+  .info-profil {
+    padding-left: 20px;
+    div{
+      font-style: bold;
+    }
+
+    div {
+      margin-bottom: 10px; 
+    }
+
+    .follow-container {
+      font-weight: bold; 
+      display: flex; 
+      align-items: center; 
+
+      .follower-count,
+      .following-count {
+        margin-right: 10px; 
+      }
+    }
+
+    .name-container {
+      font-size: 1.2em; 
+    }
+
+    .bio-container {
+      font-style: italic; 
+    }
+  }
+}

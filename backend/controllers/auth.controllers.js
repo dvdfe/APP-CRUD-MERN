@@ -83,6 +83,7 @@ exports.login = (req, res, next) => {
             following: user.following,
             likes: user.likes,
             picture: user.picture,
+            name: user.name
           });
         })
         .catch(() => {
