@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import Navigation from "../components/Navigation";
+import { NavLink } from "react-router-dom";
 
 const Profil = () => {
   const userData = useSelector((state) => state.user);
@@ -15,7 +16,7 @@ const Profil = () => {
           <img src={userData.picture} alt="Photo de profil" />
         </div>
         <div className="info-profil">
-          <div>{userData.pseudo}</div>
+          <div>{userData.pseudo}<NavLink to="../edit-profil">Modifier le profil</NavLink></div>
           <div className="follow-container">
             <div className="follower-count">
               {userData.followers.length} follower(s)

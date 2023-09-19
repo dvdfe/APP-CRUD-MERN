@@ -4,6 +4,7 @@ import LoginPage from "../../pages/LoginPage";
 import Home from "../../pages/Home";
 import Profil from "../../pages/Profil";
 import Terms from "../../pages/Terms";
+import EditProfil from "../EditProfil";
 
 const index = () => {
   return (
@@ -13,6 +14,7 @@ const index = () => {
         <Route path="/" element={<Home />} />
         <Route path="/profil" element={<Profil />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/edit-profil" element={<EditProfil />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
