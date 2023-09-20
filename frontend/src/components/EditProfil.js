@@ -4,6 +4,20 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// Fonction pour obtenir le jeton JWT des cookies
+const getJwtToken = () => {
+    const jwtCookie = document.cookie
+    .split(";")
+    .find((cookie) => cookie.trim().startsWith("jwt="));
+    
+    if (jwtCookie) {
+        return jwtCookie.trim().split("=")[1];
+    }
+    
+    return null;
+};
+console.log("cookie =" , document.cookie)
+
 const EditProfil = () => {
   const userData = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -44,21 +58,21 @@ const EditProfil = () => {
 
       const userId = userData.userID;
 
-      // Récupérez le token JWT des cookies
-      const jwtToken = document.cookie
-        .split(";")
-        .find((cookie) => cookie.trim().startsWith("jwt="))
-        ?.trim()
-        .split("=")[1];
-
-      // Ajoutez le token JWT comme en-tête Authorization
+      // Créez un objet de configuration pour Axios
       const config = {
         headers: {
-          Authorization: `Bearer ${jwtToken}`,
+          Authorization: `Bearer ${getJwtToken()}`,
         },
       };
 
-      await axios.put(`http://localhost:3000/user/${userId}`, formData, config);
+      const response = await axios.put(
+        `http://localhost:3000/user/${userId}`,
+        formData,
+        config
+      );
+
+      console.log("Réponse du serveur:", response.data);
+
       console.log("2");
 
       navigate("/profil");

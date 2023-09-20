@@ -14,7 +14,7 @@ router.get("/logout", authCtrl.logout)
 router.get("/get-all-users", auth, userCtrl.getAllUsers);
 router.get("/user-info/:id",auth, userCtrl.userInfo);
 router.delete("/:id",auth, userCtrl.deleteUser);
-router.put("/:id",auth, multer, userCtrl.updateUser);
+router.put("/:id", multer, userCtrl.updateUser);
 router.patch("/follow/:id",auth, userCtrl.followUser);
 router.patch("/unfollow/:id",auth, userCtrl.unfollowUser);
 
