@@ -7,11 +7,15 @@ const userDataSlice = createSlice({
     setUserData: (state, action) => {
       return action.payload; // Met à jour l'ID de l'utilisateur avec la valeur fournie dans l'action.
     },
+    getAllUsers:(state, action) => {
+      return action.payload;
+
+    },
     clearUserData: (state) => {
       return null; // Réinitialise l'ID de l'utilisateur à null lorsque l'utilisateur se déconnecte.
     },
   },
 });
 
-export const { setUserData, clearUserData } = userDataSlice.actions;
+export const { setUserData, getAllUsers, clearUserData } = userDataSlice.actions;
 export default userDataSlice.reducer;

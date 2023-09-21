@@ -11,7 +11,7 @@ router.post("/login", authCtrl.login);
 router.get("/logout", authCtrl.logout)
 
 //Routes pour différentes fonctions
-router.get("/get-all-users", auth, userCtrl.getAllUsers);
+router.get("/get-all-users", userCtrl.getAllUsers);
 router.get("/user-info/:id",auth, userCtrl.userInfo);
 router.delete("/:id",auth, userCtrl.deleteUser);
 router.put("/:id", multer, userCtrl.updateUser);

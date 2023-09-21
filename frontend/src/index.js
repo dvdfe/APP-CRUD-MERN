@@ -1,24 +1,36 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import "./styles/index.scss"
+import ReactDOM from 'react-dom';
+import "./styles/index.scss";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Provider} from "react-redux";
-import { applyMiddleware } from "redux";
+import { Provider } from "react-redux";
 import store from "./app/store";
+import axios from "axios";
+import { getAllUsers } from './feature/userSlice';
 
-//dev tool
-import logger from "redux-logger"
+// Dev tool
+import logger from "redux-logger";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+const fetchAllUsers = async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/user/get-all-users");
+    store.dispatch(getAllUsers(response.data));
+    console.log("State updated: ", store.getState());
+  } catch (error) {
+    console.error("Erreur lors de la récupération des utilisateurs :", error);
+  }
+};
+
+fetchAllUsers(); 
+
+const root = document.getElementById('root');
+
+ReactDOM.render(
   <Provider store={store}>
     <App />
-  </Provider>
+  </Provider>,
+  root
 );
 
-console.log("State updated: ", store.getState());
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// Si vous souhaitez mesurer les performances de votre application, vous pouvez utiliser reportWebVitals
 reportWebVitals();

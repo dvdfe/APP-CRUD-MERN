@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Navigation from "./Navigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { setUserData } from "../feature/userSlice";
 
 // Fonction pour obtenir le jeton JWT des cookies
 const getJwtToken = () => {
@@ -21,6 +22,7 @@ console.log("cookie =" , document.cookie)
 const EditProfil = () => {
   const userData = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [file, setFile] = useState(null);
   const [bio, setBio] = useState(userData.bio || "");
@@ -72,6 +74,7 @@ const EditProfil = () => {
       );
 
       console.log("Réponse du serveur:", response.data);
+      dispatch(setUserData(response.data))
 
       console.log("2");
 
