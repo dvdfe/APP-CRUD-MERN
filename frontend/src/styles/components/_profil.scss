@@ -6,63 +6,131 @@
 .info-container {
   display: flex;
   margin: 0 auto 0 auto;
-  padding: 20px; 
+  padding: 20px;
   gap: 20wh;
 
   .profil-picture {
     img {
-      max-width: 100%; 
+      max-width: 100%;
     }
   }
 
   .info-profil {
     padding-left: 20px;
-    div{
+    div {
       font-style: bold;
-      margin-bottom: 10px; 
+      margin-bottom: 10px;
     }
-    
+
     .follow-container {
-      font-weight: bold; 
-      display: flex; 
-      align-items: center; 
+      font-weight: bold;
+      display: flex;
+      align-items: center;
 
       .follower-count,
       .following-count {
-        margin-right: 10px; 
+        margin-right: 10px;
+        cursor: pointer;
       }
     }
 
     .name-container {
-      font-size: 1.2em; 
+      font-size: 1.2em;
     }
 
     .bio-container {
-      font-style: italic; 
+      font-style: italic;
     }
     .username {
       margin-bottom: 10px;
       display: flex;
       align-items: center;
-  
+
       strong {
-        font-weight: bold; 
-        margin-right: 10px; 
+        font-weight: bold;
+        margin-right: 10px;
       }
-  
+
       .edit-profile-button {
-        background-color: #007bff; 
-        color: #fff; 
-        padding: 5px 10px; 
-        border: none; 
-        border-radius: 5px; 
-        text-decoration: none; 
-        cursor: pointer; 
-  
+        background-color: #007bff;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+
         &:hover {
-          background-color: #0056b3; 
+          background-color: #0056b3;
         }
       }
     }
   }
+}
+.popup-profil-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Arrière-plan semi-transparent pour assombrir le reste de la page */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Assurez-vous que le popup est au-dessus de tout le reste */
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  max-height: 80vh; /* Limite la hauteur du popup pour qu'il soit défilable */
+  overflow-y: auto; /* Ajoute un défilement vertical si le contenu dépasse la hauteur maximale */
+}
+
+.modal h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.cross {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.followers-list,
+.following-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.followers-list li,
+.following-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.followers-list img,
+.following-list img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.followers-list h4,
+.following-list h4 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
 }
