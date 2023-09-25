@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Navigation from "../components/Navigation";
 import { NavLink } from "react-router-dom";
+import FollowHandler from "../components/FollowHandler";
 
 const Profil = () => {
   const userData = useSelector((state) => state.user.data);
@@ -63,6 +64,7 @@ const Profil = () => {
                         alt="photo de profil utilisateur"
                       />
                       <h4>{user.pseudo}</h4>
+                      <FollowHandler idToFollow={user._id}/>
                     </li>
                   ))}
             </ul>
@@ -88,6 +90,7 @@ const Profil = () => {
                         alt="photo de profil utilisateur"
                       />
                       <h4>{user.pseudo}</h4>
+                      <FollowHandler idToFollow={user._id}/>
                     </li>
                   ))}
             </ul>
