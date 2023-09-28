@@ -11,6 +11,7 @@ const Profil = () => {
   const [followingPopup, setFollowingPopup] = useState(false);
   const [followersPopup, setFollowersPopup] = useState(false);
   console.log("allU:", allUsers);
+  console.log("les followers:", userData.followers);
   return (
     <div className="page-container">
       <Navigation />
