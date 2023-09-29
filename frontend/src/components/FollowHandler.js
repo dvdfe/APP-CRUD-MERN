@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { followUser, unfollowUser } from "../feature/userSlice"; // Assurez-vous d'importer unfollowUser
+import { followUser, unfollowUser } from "../feature/userSlice";
 
 const FollowHandler = ({ idToFollow }) => {
   const dispatch = useDispatch();
@@ -19,22 +19,32 @@ const FollowHandler = ({ idToFollow }) => {
   };
 
   const handleFollow = () => {
+    const userId = userData.userID;
+    const requestBody = {
+      idToFollow: idToFollow,
+    };
+    setIsFollowed(true);
+
     axios
-      .patch(`http://localhost:3000/user/follow/${idToFollow}`) // Assurez-vous d'utiliser la route correcte
+      .patch(`http://localhost:3000/user/follow/${userId}`, requestBody)
       .then((res) => {
-        // Utilisez la réponse pour mettre à jour le suivi dans le Redux
         dispatch(followUser(idToFollow));
       })
       .catch((error) => {
         console.error("Erreur lors du suivi de l'utilisateur :", error);
+        setIsFollowed(false);
       });
   };
-
   const handleUnfollow = () => {
+    const userId = userData.userID;
+    const requestBody = {
+      idToUnfollow: idToFollow,
+    };
+    setIsFollowed(false);
+
     axios
-      .patch(`http://localhost:3000/user/unfollow/${idToFollow}`) // Assurez-vous d'utiliser la route correcte
+      .patch(`http://localhost:3000/user/unfollow/${userId}`, requestBody) // Assurez-vous d'utiliser la route correcte
       .then((res) => {
-        // Utilisez la réponse pour mettre à jour le désabonnement dans le Redux
         dispatch(unfollowUser(idToFollow));
       })
       .catch((error) => {
@@ -54,7 +64,7 @@ const FollowHandler = ({ idToFollow }) => {
     <div>
       {isFollowed ? (
         <span>
-          <button onClick={handleUnfollow}>Suivi(e)</button>
+          <button onClick={handleUnfollow}>Unfollow</button>
         </span>
       ) : (
         <span>

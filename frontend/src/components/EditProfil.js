@@ -20,7 +20,7 @@ const getJwtToken = () => {
 console.log("cookie =" , document.cookie)
 
 const EditProfil = () => {
-  const userData = useSelector((state) => state.user);
+  const userData = useSelector((state) => state.user.data);
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
@@ -48,7 +48,6 @@ const EditProfil = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("1");
 
     try {
       const formData = new FormData();
@@ -60,7 +59,6 @@ const EditProfil = () => {
 
       const userId = userData.userID;
 
-      // Créez un objet de configuration pour Axios
       const config = {
         headers: {
           Authorization: `Bearer ${getJwtToken()}`,

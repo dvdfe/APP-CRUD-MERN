@@ -6,7 +6,7 @@ import FollowHandler from "../components/FollowHandler";
 
 const Profil = () => {
   const userData = useSelector((state) => state.user.data);
-  const allUsers = useSelector((state) => state.user.allUsers); // Assurez-vous de récupérer le tableau d'utilisateurs
+  const allUsers = useSelector((state) => state.user.allUsers); 
 
   const [followingPopup, setFollowingPopup] = useState(false);
   const [followersPopup, setFollowersPopup] = useState(false);

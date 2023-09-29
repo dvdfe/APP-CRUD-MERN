@@ -104,6 +104,8 @@ exports.followUser = async (req, res) => {
 
     const user = await User.findById(userId);
     const userToFollow = await User.findById(userIdToFollow);
+    console.log('userID:', userId)
+    console.log('userIDTofollow:', userToFollow)
 
     if (!user || !userToFollow) {
       return res.status(400).send("ID inconnu : " + userId);
