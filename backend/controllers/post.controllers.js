@@ -4,8 +4,8 @@ const fs = require("fs");
 
 exports.readPost = async (req, res, next) => {
   try {
-    const posts = await Post.find();
-    res.status(200).json(posts).sort({ createdAt: -1 });
+    const posts = await Post.find().sort({ createdAt: -1 });
+    res.status(200).json(posts);
   } catch (error) {
     res
       .status(500)
