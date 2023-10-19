@@ -23,7 +23,7 @@ const Post = () => {
             <div className="post-header">
               <div className="user-info">
                 <img
-                  src={post.userId} // Remplacez par le chemin de l'avatar de l'utilisateur
+                  src={post.userId}
                   alt={`Avatar de ${post.userId}`}
                 />
                 <h4>{post.userName}</h4>
